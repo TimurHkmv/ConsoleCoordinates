@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <fstream>
+#include <regex>
 #include "point.h"
 
 using namespace std;
@@ -13,62 +14,30 @@ vector<point> parseString(vector<string> stroki) {
     bool isFound;
     int endStroki, amount, x, y;
     amount = stroki.size() - 1;
-    string stroka = "", example = "{:}", bufStr;
-    for (int n = 0; n <= amount; n++) {
-        stroka = stroki.at(n);
-        endStroki = stroka.length() - 1;
-        while (true) {
-            isFound = false;
-            for (int i = 0; i <= endStroki; i++) {
-                if (stroka[i] == example[0]) {
-                    for (int j = i + 1; j <= endStroki; j++) {
-                        if (stroka[j] == example[1]) {
-                            for (int k = j; k <= endStroki; k++) {
-                                if (stroka[k] == example[2]) {
-                                    isFound = true;
-                                    try {
-                                        x = stoi(stroka.substr(i + 1, j - i - 1));
-                                        y = stoi(stroka.substr(j + 1, k - j - 1));
-                                        if (points.empty()) {
-                                            points.push_back(point(x, y, 1));
-                                        }
-                                        else {
-                                            points.push_back(point(x, y, points.front(), points.back().getNumber() + 1));
-                                        }
-                                    }
-                                    catch (...) {}
-                                    stroka.erase(i, k - i + 1);
-                                    endStroki -= k - i + 1;
-                                    i = endStroki;
-                                    j = endStroki;
-                                    k = endStroki;
-                                }
-                                else if (stroka[k] == example[0]) {
-                                    isFound = true;
-                                    stroka.erase(i, k - i);
-                                    endStroki -= k - i;
-                                    i = endStroki;
-                                    j = endStroki;
-                                    k = endStroki;
-                                }
-                            }
-                        }
-                        else if (stroka[j] == example[0]) {
-                            stroka.erase(i, j - i);
-                            endStroki -= j - i;
-                            isFound = true;
-                            i = endStroki;
-                            j = endStroki;
-                        }
-                        /*else if (stroka[j] == example[2]) {
-                            stroka.erase(i, j - i + 1);
-                            endStroki -= j - i+1;
-                            cout << "find } : " << stroka << endl;
-                        }*/
-                    }
-                }
+    // string stroka = "", example = "{:}", bufStr;
+
+    regex coordRegex(R"([()\[\]{}<>]\s*([+-]?\d+)\s*[;,:.]\s*([+-]?\d+)\s*[()\[\]{}<>])");
+    
+    for (const string& line : stroki) {
+        string::const_iterator searchStart(line.cbegin());
+        smatch match;
+
+        while(regex_search(searchStart, line.cend(), match, coordRegex)) {
+            if (match[0].first == match[0].second) {
+                ++searchStart;
+                if (searchStart == line.cend()) break;
+                continue;
             }
-            if (!isFound) { break; }
+            cout << line << endl;
+            int x = stoi(match[1].str());
+            int y = stoi(match[2].str());
+
+            if (points.empty()) {
+                points.emplace_back(x,y,1);
+            } else {
+                points.emplace_back(x, y, points.front(), points.back().getNumber()+1);
+            }
+            searchStart = match[0].second;
         }
     }
     return points;
@@ -87,7 +56,6 @@ int main(int argc, char* argv[]) {
             inputFileName = argv[++i];
         }
     }
-
     if (!inputFileName.empty()) {
         ifstream in(inputFileName);
         if (!in) {
@@ -106,10 +74,7 @@ int main(int argc, char* argv[]) {
             getline(cin, bufStr);
             stroki.push_back(bufStr);
         }
-
-
         // Ввод строк:
-
     }
     // Отлов точек из строк:
     points = parseString(stroki);
