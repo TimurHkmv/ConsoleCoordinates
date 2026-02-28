@@ -1,0 +1,7 @@
+/build/
+/.vs/
+/.vscode/
+/CMakeFiles/
+/CMakeCache.txt
+/*.sln
+/*.vcxproj*
