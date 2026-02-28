@@ -14,8 +14,6 @@ vector<point> parseString(vector<string> stroki) {
     bool isFound;
     int endStroki, amount, x, y;
     amount = stroki.size() - 1;
-    // string stroka = "", example = "{:}", bufStr;
-
     regex coordRegex(R"([()\[\]{}<>]\s*([+-]?\d+)\s*[;,:.]\s*([+-]?\d+)\s*[()\[\]{}<>])");
     
     for (const string& line : stroki) {
@@ -23,12 +21,12 @@ vector<point> parseString(vector<string> stroki) {
         smatch match;
 
         while(regex_search(searchStart, line.cend(), match, coordRegex)) {
+            // dead end check
             if (match[0].first == match[0].second) {
                 ++searchStart;
                 if (searchStart == line.cend()) break;
                 continue;
             }
-            cout << line << endl;
             int x = stoi(match[1].str());
             int y = stoi(match[2].str());
 
@@ -49,7 +47,7 @@ int main(int argc, char* argv[]) {
     string inputFileName;
     bool isFound;
     int endStroki, amount, x, y;
-    string stroka = "", example = "{:}", bufStr;
+    string bufStr;
     for (int i = 1; i < argc; ++i) {
         string arg = argv[i];
         if (arg == "--input" && i + 1 < argc) {
