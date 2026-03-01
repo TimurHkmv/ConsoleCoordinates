@@ -11,9 +11,8 @@ using namespace std;
 
 vector<point> parseString(vector<string> stroki) {
     vector<point> points;
-    bool isFound;
-    int endStroki, amount, x, y;
-    amount = stroki.size() - 1;
+    int amount;
+    amount = (int)stroki.size() - 1;
     regex coordRegex(R"([()\[\]{}<>]\s*([+-]?\d+)\s*[;,:.]\s*([+-]?\d+)\s*[()\[\]{}<>])");
     
     for (const string& line : stroki) {
@@ -46,7 +45,7 @@ int main(int argc, char* argv[]) {
     vector<point> points;
     string inputFileName;
     bool isFound;
-    int endStroki, amount, x, y;
+    int amount, x, y;
     string bufStr;
     for (int i = 1; i < argc; ++i) {
         string arg = argv[i];
