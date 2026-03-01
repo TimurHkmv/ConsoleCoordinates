@@ -8,14 +8,16 @@
 
 using namespace std;
 
-
+/**
+ * @brief function to find point [x:y] in string vector
+ * @param stroki string vector with lines containing points
+ * @return vector of points in order of detection
+ */
 vector<point> parseString(vector<string> stroki) {
     vector<point> points;
-    bool isFound;
-    int endStroki, amount, x, y;
-    amount = stroki.size() - 1;
+    int amount;
+    amount = (int)stroki.size() - 1;
     regex coordRegex(R"([()\[\]{}<>]\s*([+-]?\d+)\s*[;,:.]\s*([+-]?\d+)\s*[()\[\]{}<>])");
-    
     for (const string& line : stroki) {
         string::const_iterator searchStart(line.cbegin());
         smatch match;
@@ -45,8 +47,7 @@ int main(int argc, char* argv[]) {
     vector<string> stroki;
     vector<point> points;
     string inputFileName;
-    bool isFound;
-    int endStroki, amount, x, y;
+    int amount, x, y;
     string bufStr;
     for (int i = 1; i < argc; ++i) {
         string arg = argv[i];
@@ -54,6 +55,7 @@ int main(int argc, char* argv[]) {
             inputFileName = argv[++i];
         }
     }
+    // Input from file
     if (!inputFileName.empty()) {
         ifstream in(inputFileName);
         if (!in) {
@@ -65,6 +67,7 @@ int main(int argc, char* argv[]) {
             stroki.push_back(line);
         }
     }
+    // Terminal input
     else {
         cout << "number of lines: ";
         cin >> amount;
@@ -72,30 +75,31 @@ int main(int argc, char* argv[]) {
             getline(cin, bufStr);
             stroki.push_back(bufStr);
         }
-        // Ввод строк:
     }
-    // Отлов точек из строк:
+    // Find points in input lines
     points = parseString(stroki);
-    // Вывод точек и расстояний до первой:
+    // Output of points
     for (int i = 0; i < points.size(); i++) {
         cout << "point " << i + 1 << ": ";
         points.at(i).output();
     }
+    // Output of distances between all points and first point
     for (int i = 1; i < points.size(); i++) {
         cout << "distance between point1 and point" << points.at(i).getNumber() << " = " << points.at(i).getDistance() << endl;
     }
-    // Сортировка
+    // Sort points by distances to first point
     if (!points.empty()) {
         cout << "Sorted distances: " << endl;
         sort(points.begin(), points.end(),
      [](const point& a, const point& b) {
          return a.getDistance() < b.getDistance();
      });
+        // Output sorted distances
         for (int i = 0; i < points.size() - 1; i++) {
             cout << "distance between point1 and point" << points.at(i).getNumber() << " = " << points.at(i).getDistance() << endl;
         }
     }
-    // Границы координатной плоскости: 
+    // Output of coordinate plane
     int maxX = 0, minX = 0, maxY = 0, minY = 0;
     for (int i = 0; i < points.size(); i++) {
         if (points.at(i).getX() > maxX) {
@@ -111,7 +115,6 @@ int main(int argc, char* argv[]) {
             minY = points.at(i).getY();
         }
     }
-    // Если точки не помещаются:
     if (minX >= 0) {
         if (maxX > 206) { maxX = 206; }
     }
@@ -122,28 +125,30 @@ int main(int argc, char* argv[]) {
         maxX = 103;
         minX = -103;
     }
-    // Рисуем координатную плоскость:
     cout << "draw: " << endl;
+    bool isFound;
     for (y = maxY + 1; y >= minY - 1; y--) {
         for (x = minX - 1; x <= maxX + 1; x++) {
             isFound = false;
-            for (int i = 0; i < points.size(); i++) { // Проверяем, нужно ли ставить точку
+            // Print point
+            for (int i = 0; i < points.size(); i++) { 
                 if ((points.at(i).getX() == x) && (points.at(i).getY() == y)) {
                     cout << "*";
                     isFound = true;
                 }
             }
-            if (!isFound) { // Если точки нет
-                if ((x == 0) && (y != 0)) { // Проверяем нужно ли рисовать Oy
+            if (!isFound) { 
+                // Print axis
+                if ((x == 0) && (y != 0)) { 
                     cout << "|";
                 }
-                else if ((x != 0) && (y == 0)) { // Проверяем нужно ли рисовать Ox
+                else if ((x != 0) && (y == 0)) { 
                     cout << "-";
                 }
-                else if ((x == 0) && (y == 0)) { // Проверяем нужно ли рисовать центр
+                else if ((x == 0) && (y == 0)) { 
                     cout << "+";
                 }
-                else { // Если ничего нет, ставим пробел
+                else {
                     cout << " ";
                 }
             }

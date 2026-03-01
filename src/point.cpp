@@ -9,11 +9,11 @@ point::point() : x(0), y(0), number(0), r(0.0) {}
 point::point(int iniX, int iniY, int iniNumber)
     : x(iniX), y(iniY), number(iniNumber), r(0.0) {}
 
-point::point(int iniX, int iniY, const point& firstPoint, int iniNumber)
+point::point(int iniX, int iniY, const point& somePoint, int iniNumber)
     : x(iniX), y(iniY), number(iniNumber)
 {
-    r = std::sqrt(std::pow(iniX - firstPoint.x, 2) +
-                  std::pow(iniY - firstPoint.y, 2));
+    r = std::sqrt(std::pow(iniX - somePoint.x, 2) +
+                  std::pow(iniY - somePoint.y, 2));
 }
 
 point::point(const point& somePoint)
@@ -25,7 +25,6 @@ point::point(const point& somePoint)
 int point::getX() const { return x; }
 int point::getY() const { return y; }
 int point::getNumber() const { return number; }
-double point::getR() const { return r; }
 
 void point::output() const {
     cout << "(" << x << ";" << y << ")" << endl;
