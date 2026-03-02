@@ -102,10 +102,10 @@ int main(int argc, char* argv[]) {
     // Output of coordinate plane
     int maxX = 0, minX = 0, maxY = 0, minY = 0;
     for (int i = 0; i < points.size(); i++) {
-        if (points.at(i).getX() > maxX) {
+        if ((points.at(i).getX() > maxX) && (points.at(i).getX() < 103)) {
             maxX = points.at(i).getX();
         }
-        if (points.at(i).getX() < minX) {
+        if (points.at(i).getX() < minX  && (points.at(i).getX() > -103)) {
             minX = points.at(i).getX();
         }
         if (points.at(i).getY() > maxY) {
@@ -115,16 +115,16 @@ int main(int argc, char* argv[]) {
             minY = points.at(i).getY();
         }
     }
-    if (minX >= 0) {
-        if (maxX > 206) { maxX = 206; }
-    }
-    else if (maxX == 0) {
-        if (minX < 206) { minX = -205; }
-    }
-    else if (maxX - minX > 206) {
-        maxX = 103;
-        minX = -103;
-    }
+    // if (minX >= 0) {
+    //     if (maxX > 206) { maxX = 206; }
+    // }
+    // else if (maxX == 0) {
+    //     if (minX > 206) { minX = 206; }
+    // }
+    // else if (maxX - minX > 206) {
+    //     maxX = 103;
+    //     minX = -103;
+    // }
     cout << "draw: " << endl;
     bool isFound;
     for (y = maxY + 1; y >= minY - 1; y--) {
