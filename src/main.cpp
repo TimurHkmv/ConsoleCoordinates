@@ -135,6 +135,7 @@ int main(int argc, char* argv[]) {
                 if ((points.at(i).getX() == x) && (points.at(i).getY() == y)) {
                     cout << "*";
                     isFound = true;
+                    break;
                 }
             }
             if (!isFound) { 
